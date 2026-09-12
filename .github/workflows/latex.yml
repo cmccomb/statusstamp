@@ -20,8 +20,10 @@ jobs:
           .venv/bin/python -m pip install -r tests/requirements.txt
       - name: Check all supported TeX Live engines
         run: |
+          failed=0
           for engine in pdflatex xelatex lualatex; do
-            make check PYTHON=.venv/bin/python ENGINE="$engine"
+            make check PYTHON=.venv/bin/python ENGINE="$engine" || failed=1
           done
+          exit "$failed"
       - name: Build the Overleaf bundle
         run: make bundle PYTHON=.venv/bin/python

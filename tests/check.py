@@ -91,13 +91,15 @@ def check():
     baseline = compile_tex("baseline", document())
     disabled = compile_tex("disabled", document(r"\usepackage[enabled=false]{statusstamp}"))
     assert len(baseline) == len(disabled) == 3
-    assert spans(baseline) == spans(disabled), "Loading the disabled package changed text layout or fonts"
+    assert spans(baseline) == spans(disabled), ("Loading the disabled package changed text layout or fonts\n"
+                                               f"Baseline: {spans(baseline)}\nDisabled: {spans(disabled)}")
     assert all(raster(a).samples == raster(b).samples for a, b in zip(baseline, disabled))
 
     for selection, expected in [("all", [1, 2, 3]), ("first", [1]), ("odd", [1, 3]), ("even", [2])]:
         pdf = compile_tex(selection, document(rf"\usepackage[pages={selection}]{{statusstamp}}"))
         assert len(pdf) == 3 and mark_pages(pdf) == expected, f"Incorrect physical page selection: {selection}"
-        assert spans(pdf) == spans(baseline), f"The {selection} stamp changed layout or fonts"
+        assert spans(pdf) == spans(baseline), (f"The {selection} stamp changed layout or fonts\n"
+                                             f"Baseline: {spans(baseline)}\nStamped: {spans(pdf)}")
 
     blank_body = r"\pagestyle{empty}\null"
     # Freeze the original drawing, but prebuild it outside shipout so XeTeX
