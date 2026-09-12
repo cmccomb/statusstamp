@@ -41,7 +41,9 @@ def compile_tex(name, source, fail=False):
             raise AssertionError(f"{name}: compilation failed\n{result.stdout}\n{result.stderr}")
     log = tex.with_suffix(".log").read_text(errors="replace")
     assert "Missing character:" not in log, f"{name}: missing glyph"
-    assert "Font shape" not in log, f"{name}: unexpected font substitution"
+    if "LaTeX Font Warning:" in log:
+        warning = log[log.index("LaTeX Font Warning:"):][:500]
+        raise AssertionError(f"{name}: unexpected font warning\n{warning}")
     pdf = fitz.open(tex.with_suffix(".pdf"))
     # A successful TeX exit is insufficient: catch malformed PDF resources.
     fitz.TOOLS.mupdf_warnings(reset=True)
