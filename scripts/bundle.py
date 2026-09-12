@@ -14,6 +14,8 @@ files = {
     "examples/gallery-samples.tex": "examples/gallery-samples.tex",
     "docs/gallery-samples.pdf": "docs/gallery-samples.pdf",
     "docs/gallery.pdf": "docs/gallery.pdf",
+    "docs/usage.md": "docs/usage.md",
+    "docs/development.md": "docs/development.md",
     "README.md": "README.md",
     "CHANGELOG.md": "CHANGELOG.md",
     "LICENSE": "LICENSE",
