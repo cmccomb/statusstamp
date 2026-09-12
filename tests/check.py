@@ -25,6 +25,7 @@ def compile_tex(name, source, fail=False):
     tex = BUILD / f"{name}.tex"
     tex.write_text(source)
     env = dict(os.environ, TEXINPUTS=f"{ROOT}{os.pathsep}" + os.environ.get("TEXINPUTS", ""))
+    env["PATH"] = f"{Path(ENGINE).parent}{os.pathsep}" + env.get("PATH", "")
     if Path(ENGINE).name == "tectonic":
         cmd = [ENGINE, "-Z", f"search-path={ROOT}", "--keep-logs", "--outdir", str(BUILD), str(tex)]
         passes = 1  # Tectonic handles reruns itself.
@@ -81,10 +82,18 @@ def mark_pages(pdf, text="SUBMITTED"):
 
 
 def spans(pdf):
-    return [[(span["text"], span["font"], tuple(round(v, 3) for v in span["bbox"]))
-             for block in page.get_text("dict")["blocks"] if "lines" in block
-             for line in block["lines"] for span in line["spans"]
-             if "SUBMITTED" not in span["text"]] for page in pdf]
+    result = []
+    for page in pdf:
+        # Bitmap Type3 font names (F44, F45, ...) are PDF resource IDs, not
+        # font identities. Allocation changes when the stamp font is loaded.
+        # The separate full-page raster equality check verifies these glyphs.
+        bitmap_ids = {font[3] for font in page.get_fonts() if font[2] == "Type3"}
+        result.append([(span["text"], "Type3" if span["font"] in bitmap_ids else span["font"],
+                        tuple(round(v, 3) for v in span["bbox"]))
+                       for block in page.get_text("dict")["blocks"] if "lines" in block
+                       for line in block["lines"] for span in line["spans"]
+                       if "SUBMITTED" not in span["text"]])
+    return result
 
 
 def check():
