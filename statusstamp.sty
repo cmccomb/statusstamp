@@ -1,0 +1,211 @@
+% Copyright (c) 2026 Chris McComb. MIT License.
+\NeedsTeXFormat{LaTeX2e}[2020-10-01]
+\ProvidesPackage{statusstamp}[2026/09/12 v0.1.0 Distressed document status stamps]
+\RequirePackage{xcolor}
+\RequirePackage{graphicx}
+\RequirePackage{tikz}
+\usetikzlibrary{decorations.pathmorphing}
+% Declare T1 when needed without changing the document's default encoding.
+% The qhv family uses legacy encodings even in a Unicode-engine document.
+\@ifundefined{T@T1}{\input{t1enc.def}}{}
+
+\definecolor{statusstampred}{RGB}{205,32,32}
+\newif\ifstatusstamp@enabled
+\newif\ifstatusstamp@distressed
+\newif\ifstatusstamp@selected
+\newif\ifstatusstamp@ready
+\newsavebox{\statusstamp@box}
+\newdimen\statusstamp@x
+\newdimen\statusstamp@y
+\newdimen\statusstamp@halfheight
+\def\statusstamp@text{SUBMITTED}
+\def\statusstamp@date{}
+\def\statusstamp@color{statusstampred}
+\def\statusstamp@papercolor{white}
+\def\statusstamp@angle{11}
+\def\statusstamp@scale{1}
+\def\statusstamp@opacity{.82}
+\def\statusstamp@seed{7319}
+\def\statusstamp@margin{1cm}
+\def\statusstamp@xshift{0pt}
+\def\statusstamp@yshift{0pt}
+\def\statusstamp@position{center}
+\def\statusstamp@layer{background}
+\def\statusstamp@select{\statusstamp@selectedtrue}
+\statusstamp@enabledtrue
+\statusstamp@distressedtrue
+
+\pgfkeys{
+  /statusstamp/.is family, /statusstamp,
+  text/.code={%
+    \if\relax\detokenize{#1}\relax
+      \PackageError{statusstamp}{Stamp text must not be empty}{Use enabled=false to hide page stamps.}%
+    \else\def\statusstamp@text{#1}\fi},
+  date/.store in=\statusstamp@date,
+  color/.store in=\statusstamp@color,
+  paper-color/.store in=\statusstamp@papercolor,
+  angle/.store in=\statusstamp@angle,
+  scale/.code={%
+    \pgfmathparse{#1}%
+    \ifdim\pgfmathresult pt>0pt
+      \let\statusstamp@scale\pgfmathresult
+    \else
+      \PackageError{statusstamp}{Scale must be positive}{Use scale=1 for the original size.}%
+    \fi},
+  opacity/.code={%
+    \pgfmathparse{#1}%
+    \ifdim\pgfmathresult pt<0pt
+      \PackageError{statusstamp}{Opacity must be between 0 and 1}{Use opacity=.82 for the original appearance.}%
+    \else\ifdim\pgfmathresult pt>1pt
+      \PackageError{statusstamp}{Opacity must be between 0 and 1}{Use opacity=.82 for the original appearance.}%
+    \else
+      \let\statusstamp@opacity\pgfmathresult
+    \fi\fi},
+  seed/.store in=\statusstamp@seed,
+  margin/.store in=\statusstamp@margin,
+  xshift/.store in=\statusstamp@xshift,
+  yshift/.store in=\statusstamp@yshift,
+  enabled/.is if=statusstamp@enabled,
+  enabled/.default=true,
+  distressed/.is if=statusstamp@distressed,
+  distressed/.default=true,
+  position/.is choice,
+  position/center/.code={\def\statusstamp@position{center}},
+  position/top-left/.code={\def\statusstamp@position{top-left}},
+  position/top-right/.code={\def\statusstamp@position{top-right}},
+  position/bottom-left/.code={\def\statusstamp@position{bottom-left}},
+  position/bottom-right/.code={\def\statusstamp@position{bottom-right}},
+  layer/.is choice,
+  layer/background/.code={\def\statusstamp@layer{background}},
+  layer/foreground/.code={\def\statusstamp@layer{foreground}},
+  pages/.is choice,
+  pages/all/.code={\def\statusstamp@select{\statusstamp@selectedtrue}},
+  pages/first/.code={\def\statusstamp@select{%
+    \ifnum\ReadonlyShipoutCounter=1 \statusstamp@selectedtrue\fi}},
+  pages/odd/.code={\def\statusstamp@select{%
+    \ifodd\ReadonlyShipoutCounter \statusstamp@selectedtrue\fi}},
+  pages/even/.code={\def\statusstamp@select{%
+    \ifodd\ReadonlyShipoutCounter\else\statusstamp@selectedtrue\fi}}
+}
+\newcommand{\statusstampsetup}[1]{%
+  \pgfkeys{/statusstamp/.cd,#1}%
+  \ifstatusstamp@ready\statusstamp@build\fi
+}
+\DeclareOption*{\expandafter\statusstampsetup\expandafter{\CurrentOption}}
+\ProcessOptions\relax
+
+% Keep the original drawing coordinates and random-call order. TeX Gyre Heros
+% is selected locally; loading this package does not change \sfdefault.
+\newcommand{\statusstamp@drawing}{%
+  \begin{tikzpicture}[x=1cm,y=1cm,baseline=(current bounding box.center)]
+    \begin{scope}[rotate=\statusstamp@angle,transform shape]
+      \ifx\statusstamp@date\@empty
+        \node[inner sep=0pt,text=\statusstamp@color,opacity=\statusstamp@opacity]
+          at (0,0) {\resizebox{6.8cm}{1.65cm}{%
+            \fontencoding{T1}\fontfamily{qhv}\fontseries{b}\selectfont\statusstamp@text}};
+      \else
+        \node[inner sep=0pt,text=\statusstamp@color,opacity=\statusstamp@opacity]
+          at (0,.30) {\resizebox{6.8cm}{1.0cm}{%
+            \fontencoding{T1}\fontfamily{qhv}\fontseries{b}\selectfont\statusstamp@text}};
+        \node[inner sep=0pt,text=\statusstamp@color,opacity=\statusstamp@opacity]
+          at (0,-.73) {\resizebox{!}{.30cm}{%
+            \fontencoding{T1}\fontfamily{qhv}\fontseries{b}\selectfont\statusstamp@date}};
+      \fi
+      \pgfmathsetmacro{\statusstamp@inneropacity}{\statusstamp@opacity*0.46/0.82}
+      \ifstatusstamp@distressed
+        \draw[\statusstamp@color,opacity=\statusstamp@opacity,line width=2.5pt,
+          decorate,decoration={random steps,segment length=2.3pt,amplitude=.55pt}]
+          (-3.82,-1.15) rectangle (3.82,1.15);
+        \draw[\statusstamp@color,opacity=\statusstamp@inneropacity,line width=.9pt,
+          decorate,decoration={random steps,segment length=1.7pt,amplitude=.35pt}]
+          (-3.73,-1.06) rectangle (3.73,1.06);
+        \ifdim\statusstamp@opacity pt>0pt
+        \begin{scope}
+          \clip (-3.95,-1.28) rectangle (3.95,1.28);
+          \foreach \i in {1,...,120} {
+            \pgfmathsetmacro{\sx}{-3.82 + 7.64*rnd}
+            \pgfmathsetmacro{\sy}{-1.15 + 2.30*rnd}
+            \pgfmathsetmacro{\slen}{0.04 + 0.30*rnd}
+            \pgfmathsetmacro{\sang}{-32 + 64*rnd}
+            \pgfmathsetmacro{\slw}{0.40 + 1.35*rnd}
+            \draw[\statusstamp@papercolor,opacity=.96,line width=\slw pt,line cap=round]
+              (\sx,\sy) -- ++(\sang:\slen);
+          }
+          \foreach \i in {1,...,70} {
+            \pgfmathsetmacro{\cx}{-3.82 + 7.64*rnd}
+            \pgfmathsetmacro{\cy}{-1.15 + 2.30*rnd}
+            \pgfmathsetmacro{\rx}{0.012 + 0.055*rnd}
+            \pgfmathsetmacro{\ry}{0.006 + 0.025*rnd}
+            \pgfmathsetmacro{\rang}{180*rnd}
+            \fill[\statusstamp@papercolor,opacity=.97,rotate around={\rang:(\cx,\cy)}]
+              (\cx,\cy) ellipse[x radius=\rx,y radius=\ry];
+          }
+        \end{scope}
+        \fi
+      \else
+        \draw[\statusstamp@color,opacity=\statusstamp@opacity,line width=2.5pt]
+          (-3.82,-1.15) rectangle (3.82,1.15);
+        \draw[\statusstamp@color,opacity=\statusstamp@inneropacity,line width=.9pt]
+          (-3.73,-1.06) rectangle (3.73,1.06);
+      \fi
+    \end{scope}
+  \end{tikzpicture}%
+}
+
+\newcommand{\statusstamp@render}{%
+  \begingroup
+    % PGF's generator state is global even inside a TeX group. Restore it so
+    % the stamp cannot change random diagrams elsewhere in the document.
+    \let\statusstamp@savedseed\pgfmath@rnd@z
+    \pgfmathsetseed{\statusstamp@seed}%
+    \scalebox{\statusstamp@scale}{\statusstamp@drawing}%
+    \global\let\pgfmath@rnd@z\statusstamp@savedseed
+  \endgroup
+}
+\newcommand{\statusstamp}[1][]{%
+  \begingroup\pgfkeys{/statusstamp/.cd,#1}\statusstamp@render\endgroup
+}
+
+% Prepare PDF resources before shipout (especially important for XeTeX).
+% Cache the drawing once per setup change rather than drawing 190 wear marks
+% again on every page. The box and settings obey ordinary TeX grouping.
+\newcommand{\statusstamp@build}{\sbox{\statusstamp@box}{\statusstamp@render}}
+\AtBeginDocument{\statusstamp@readytrue\statusstamp@build}
+\newcommand{\statusstamp@place}{%
+  \statusstamp@x=.5\paperwidth
+  \statusstamp@y=-.5\paperheight
+  \statusstamp@halfheight=\dimexpr(\ht\statusstamp@box+\dp\statusstamp@box)/2\relax
+  \csname statusstamp@position@\statusstamp@position\endcsname
+  \advance\statusstamp@x by \statusstamp@xshift\relax
+  \advance\statusstamp@y by \statusstamp@yshift\relax
+  \put(\statusstamp@x,\statusstamp@y){\makebox(0,0){\usebox{\statusstamp@box}}}%
+}
+\expandafter\def\csname statusstamp@position@center\endcsname{}
+\expandafter\def\csname statusstamp@position@top-left\endcsname{%
+  \statusstamp@x=\dimexpr\statusstamp@margin+\wd\statusstamp@box/2\relax
+  \statusstamp@y=\dimexpr-\statusstamp@margin-\statusstamp@halfheight\relax}
+\expandafter\def\csname statusstamp@position@top-right\endcsname{%
+  \statusstamp@x=\dimexpr\paperwidth-\statusstamp@margin-\wd\statusstamp@box/2\relax
+  \statusstamp@y=\dimexpr-\statusstamp@margin-\statusstamp@halfheight\relax}
+\expandafter\def\csname statusstamp@position@bottom-left\endcsname{%
+  \statusstamp@x=\dimexpr\statusstamp@margin+\wd\statusstamp@box/2\relax
+  \statusstamp@y=\dimexpr-\paperheight+\statusstamp@margin+\statusstamp@halfheight\relax}
+\expandafter\def\csname statusstamp@position@bottom-right\endcsname{%
+  \statusstamp@x=\dimexpr\paperwidth-\statusstamp@margin-\wd\statusstamp@box/2\relax
+  \statusstamp@y=\dimexpr-\paperheight+\statusstamp@margin+\statusstamp@halfheight\relax}
+
+\newcommand{\statusstamp@shipout}[1]{%
+  \ifstatusstamp@enabled
+    \begingroup
+      \def\statusstamp@thislayer{#1}%
+      \ifx\statusstamp@layer\statusstamp@thislayer
+        \statusstamp@selectedfalse
+        \statusstamp@select
+        \ifstatusstamp@selected\statusstamp@place\fi
+      \fi
+    \endgroup
+  \fi
+}
+\AddToHook{shipout/background}[statusstamp]{\statusstamp@shipout{background}}
+\AddToHook{shipout/foreground}[statusstamp]{\statusstamp@shipout{foreground}}
+\endinput

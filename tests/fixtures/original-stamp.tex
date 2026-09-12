@@ -1,0 +1,51 @@
+% Frozen rendering reference, extracted from the original proposal stamp.
+% Only the stamp code is retained; no proposal content is included.
+\usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usetikzlibrary{decorations.pathmorphing}
+\usepackage{eso-pic}
+\usepackage{tgheros}
+\definecolor{stampred}{RGB}{205,32,32}
+\newcommand{\FinalStamp}{%
+  \begingroup
+  \pgfmathsetseed{7319}%
+  \begin{tikzpicture}[x=1cm,y=1cm,baseline=(current bounding box.center)]
+    \begin{scope}[rotate=11,transform shape]
+      \node[inner sep=0pt,text=stampred,opacity=.82] at (0,0) {%
+        \resizebox{6.8cm}{1.65cm}{%
+          \fontfamily{qhv}\fontseries{b}\selectfont SUBMITTED}};
+      \draw[stampred,opacity=.82,line width=2.5pt,decorate,
+        decoration={random steps,segment length=2.3pt,amplitude=.55pt}]
+        (-3.82,-1.15) rectangle (3.82,1.15);
+      \draw[stampred,opacity=.46,line width=.9pt,decorate,
+        decoration={random steps,segment length=1.7pt,amplitude=.35pt}]
+        (-3.73,-1.06) rectangle (3.73,1.06);
+      \begin{scope}
+        \clip (-3.95,-1.28) rectangle (3.95,1.28);
+        \foreach \i in {1,...,120} {
+          \pgfmathsetmacro{\sx}{-3.82 + 7.64*rnd}
+          \pgfmathsetmacro{\sy}{-1.15 + 2.30*rnd}
+          \pgfmathsetmacro{\slen}{0.04 + 0.30*rnd}
+          \pgfmathsetmacro{\sang}{-32 + 64*rnd}
+          \pgfmathsetmacro{\slw}{0.40 + 1.35*rnd}
+          \draw[white,opacity=.96,line width=\slw pt,line cap=round]
+            (\sx,\sy) -- ++(\sang:\slen);
+        }
+        \foreach \i in {1,...,70} {
+          \pgfmathsetmacro{\cx}{-3.82 + 7.64*rnd}
+          \pgfmathsetmacro{\cy}{-1.15 + 2.30*rnd}
+          \pgfmathsetmacro{\rx}{0.012 + 0.055*rnd}
+          \pgfmathsetmacro{\ry}{0.006 + 0.025*rnd}
+          \pgfmathsetmacro{\rang}{180*rnd}
+          \fill[white,opacity=.97,rotate around={\rang:(\cx,\cy)}]
+            (\cx,\cy) ellipse[x radius=\rx,y radius=\ry];
+        }
+      \end{scope}
+    \end{scope}
+  \end{tikzpicture}%
+  \endgroup
+}
+\newcommand{\FinalWatermark}{%
+  \AddToShipoutPictureBG{\AtPageCenter{\makebox(0,0){\FinalStamp}}}%
+}

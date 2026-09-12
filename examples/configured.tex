@@ -1,0 +1,22 @@
+\documentclass[11pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage[letterpaper,margin=1in]{geometry}
+\usepackage{statusstamp}
+\statusstampsetup{
+  text=ACCEPTED,
+  date={12 September 2026},
+  color=teal!70!black,
+  scale=.48,
+  angle=-8,
+  position=top-right,
+  margin=1cm,
+  pages=first
+}
+\begin{document}
+\section*{A configured stamp}
+This illustrative date is supplied explicitly. It will not change on the
+next compile. Only the first physical page receives the stamp.
+\newpage
+\section*{A clean second page}
+The stamp does not appear here, and it has not affected the page layout.
+\end{document}
