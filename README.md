@@ -2,7 +2,13 @@
 
 Distressed, reproducible document status stamps for LaTeX.
 
-![Stamp examples](docs/gallery.png)
+![Fourteen stamp examples: labels, dates, colors, opacity, wear patterns, above and below source text, corner placement, colored paper, and disabled stamps](docs/gallery.png)
+
+[View the full-size example sheet](docs/gallery.pdf) or
+[copy the settings from its LaTeX source](examples/gallery-samples.tex).
+Each panel is a real miniature page, including the pair comparing
+`layer=background` (under the source text) with `layer=foreground` (over it).
+Use `pages=all`, `first`, `odd`, or `even` to control which pages receive a stamp.
 
 The default reproduces the original MSI JEPA proposal's **SUBMITTED** stamp:
 red ink, a rough double border, heavy TeX Gyre Heros lettering, scratches and
@@ -130,6 +136,7 @@ well. Tectonic fetches required TeX files on its first compilation.
 python3 -m venv .venv
 .venv/bin/python -m pip install -r tests/requirements.txt
 make check PYTHON=.venv/bin/python ENGINE=tectonic
+make gallery PYTHON=.venv/bin/python ENGINE=tectonic
 make bundle PYTHON=.venv/bin/python
 ```
 
@@ -139,6 +146,13 @@ The suite compares the default drawing with a frozen extraction of the
 original stamp; checks rendering, fonts, text positions, page selection,
 corner placement, layering, random state, toggles, and invalid settings; and
 compiles each example. Build output stays under `build/`.
+
+`make gallery` compiles the fourteen miniature pages in
+[`examples/gallery-samples.tex`](examples/gallery-samples.tex), assembles them
+with [`examples/gallery.tex`](examples/gallery.tex), and regenerates the PDFs
+and README image in `docs/`. The sheet shows each sample's settings. Its small
+pages use a 0.35 cm corner inset; normal documents default to 1 cm. Building
+the sheet also requires the Latin Modern fonts (`lmodern`).
 
 To compile only an example from the repository root:
 

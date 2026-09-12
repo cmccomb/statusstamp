@@ -183,7 +183,7 @@ def check():
                              document(rf"\usepackage[{value}]{{statusstamp}}"), fail=True)
         assert message in output
 
-    for example in ["minimal", "configured", "gallery"]:
+    for example in ["minimal", "configured", "gallery-samples", "gallery"]:
         compile_tex(example, (ROOT / "examples" / f"{example}.tex").read_text())
     print(f"PASS: {Path(ENGINE).name}: appearance, layout, fonts, pages, placement, layers, "
           "random state, toggles, input validation, and examples", flush=True)

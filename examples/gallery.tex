@@ -1,24 +1,51 @@
-\documentclass[11pt]{article}
+% The miniature pages are compiled from gallery-samples.tex with the public
+% package API. Run `make gallery` to rebuild both PDFs and the README image.
+\documentclass[10pt]{article}
 \usepackage[T1]{fontenc}
-\usepackage[letterpaper,margin=1in]{geometry}
-\usepackage[enabled=false]{statusstamp}
+\usepackage{lmodern}
+\usepackage[paperwidth=21.59cm,paperheight=53cm,margin=1.2cm]{geometry}
+\usepackage{graphicx,xcolor}
 \pagestyle{empty}
+\setlength{\parindent}{0pt}
+\setlength{\fboxsep}{0pt}
+\setlength{\fboxrule}{.3pt}
+
+\newcommand{\panel}[3]{%
+  \begin{minipage}[t]{.48\linewidth}
+    \vspace{0pt}%
+    \fcolorbox{black!18}{white}{%
+      \includegraphics[page=#1,width=\dimexpr\linewidth-2\fboxrule\relax]{docs/gallery-samples.pdf}}%
+    \par\vspace{4pt}
+    {\bfseries #2}\par\vspace{2pt}
+    {\fontsize{8.5}{10}\selectfont\ttfamily\raggedright #3\par}
+  \end{minipage}%
+}
+\newcommand{\panelrow}[6]{%
+  \panel{#1}{#2}{#3}\hfill\panel{#4}{#5}{#6}\par\vspace{11pt}%
+}
+
 \begin{document}
-\begin{center}
-{\LARGE\bfseries statusstamp}\par
-\medskip
-Distressed status stamps for LaTeX\par
-\bigskip
-\statusstamp\par
-\medskip
-The original appearance\par
-\bigskip
-\statusstamp[text=ACCEPTED,date={12 September 2026},color=teal!70!black,angle=-8,scale=.8]\par
-\medskip
-Custom label, explicit date, color, and rotation\par
-\bigskip
-\statusstamp[text=DRAFT,distressed=false,color=black!65,angle=0,scale=.7]\par
-\medskip
-Clean borders and a smaller size
-\end{center}
+{\fontsize{16}{19}\selectfont\bfseries statusstamp}\par\smallskip
+Fourteen ways to mark a document\par\vspace{12pt}
+
+\panelrow{1}{Original appearance}{text=SUBMITTED, angle=11, seed=7319}
+  {2}{Accepted with a date}{text=ACCEPTED, date=\{12 September 2026\}, color=teal!70!black, angle=-8, scale=.9}
+\panelrow{3}{Clean borders}{text=DRAFT, distressed=false, color=black!65, angle=0, scale=.85}
+  {4}{A different label and color}{text=CONFIDENTIAL, color=blue!55!black, angle=-6, scale=.9}
+\panelrow{5}{Light ink}{text=COPY, color=blue!65!black, opacity=.25, angle=0, scale=.9}
+  {6}{Another repeatable wear pattern}{text=REVIEW, color=orange!80!black, seed=42, angle=7, scale=.9}
+\panelrow{7}{Under the source text}{layer=background, scale=.9}
+  {8}{Over the source text}{layer=foreground, scale=.9}
+\panelrow{9}{Top left}{position=top-left, scale=.42, angle=8}
+  {10}{Top right}{position=top-right, scale=.42, angle=-8}
+\panelrow{11}{Bottom left}{position=bottom-left, scale=.42, angle=-8}
+  {12}{Bottom right}{position=bottom-right, scale=.42, angle=8}
+\panelrow{13}{Colored paper}{text=ARCHIVED, color=brown!80!black, paper-color=samplepaper, angle=-5, scale=.9}
+  {14}{A clean document}{enabled=false}
+
+{\fontsize{9}{11}\selectfont
+Each preview is a real 9\,cm by 5\,cm page. Corner examples use
+\texttt{margin=.35cm}. Other options retain their defaults. The date is
+illustrative. Colored paper uses \texttt{samplepaper} (HTML \texttt{F3E9D3})
+for both \texttt{\string\pagecolor} and \texttt{paper-color}.\par}
 \end{document}

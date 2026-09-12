@@ -13,7 +13,7 @@ jobs:
       - name: Install TeX engines and fonts
         run: |
           sudo apt-get update -qq
-          sudo apt-get install -y --no-install-recommends texlive-latex-extra texlive-fonts-recommended tex-gyre texlive-xetex texlive-luatex
+          sudo apt-get install -y --no-install-recommends texlive-latex-extra texlive-fonts-recommended tex-gyre lmodern texlive-xetex texlive-luatex
       - name: Install PDF checks
         run: |
           python3 -m venv .venv
@@ -25,5 +25,7 @@ jobs:
             make check PYTHON=.venv/bin/python ENGINE="$engine" || failed=1
           done
           exit "$failed"
+      - name: Build the README example sheet
+        run: make gallery PYTHON=.venv/bin/python ENGINE=pdflatex
       - name: Build the Overleaf bundle
         run: make bundle PYTHON=.venv/bin/python

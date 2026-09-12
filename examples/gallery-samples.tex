@@ -1,0 +1,44 @@
+% Fourteen real pages used by the README contact sheet.
+% Compile from the repository root, or run `make gallery`.
+\documentclass[10pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage[paperwidth=9cm,paperheight=5cm,margin=.7cm]{geometry}
+\usepackage[enabled=false]{statusstamp}
+\pagestyle{empty}
+\setlength{\parindent}{0pt}
+\definecolor{samplepaper}{HTML}{F3E9D3}
+
+\newcommand{\sampletext}{%
+  \vspace*{.3cm}%
+  {\bfseries Project record}\par\smallskip
+  This is the source text. The same words appear in both layer examples.
+  Compare the letters where the red stamp crosses this paragraph.
+  The text stays in the same place.
+}
+\newcommand{\sample}[2]{%
+  \clearpage
+  \pagecolor{white}%
+  \statusstampsetup{enabled=true,text=SUBMITTED,date={},color=statusstampred,
+    angle=11,scale=1,opacity=.82,seed=7319,distressed=true,paper-color=white,
+    position=center,layer=background,pages=all,margin=.35cm,xshift=0pt,yshift=0pt,#1}%
+  #2%
+}
+
+\begin{document}
+\sample{}{\null}
+\sample{text=ACCEPTED,date={12 September 2026},color=teal!70!black,
+  angle=-8,scale=.9}{\null}
+\sample{text=DRAFT,distressed=false,color=black!65,angle=0,scale=.85}{\null}
+\sample{text=CONFIDENTIAL,color=blue!55!black,angle=-6,scale=.9}{\null}
+\sample{text=COPY,color=blue!65!black,opacity=.25,angle=0,scale=.9}{\null}
+\sample{text=REVIEW,color=orange!80!black,seed=42,angle=7,scale=.9}{\null}
+\sample{layer=background,scale=.9}{\sampletext}
+\sample{layer=foreground,scale=.9}{\sampletext}
+\sample{position=top-left,scale=.42,angle=8}{\null}
+\sample{position=top-right,scale=.42,angle=-8}{\null}
+\sample{position=bottom-left,scale=.42,angle=-8}{\null}
+\sample{position=bottom-right,scale=.42,angle=8}{\null}
+\sample{text=ARCHIVED,color=brown!80!black,paper-color=samplepaper,
+  angle=-5,scale=.9}{\pagecolor{samplepaper}\null}
+\sample{enabled=false}{\sampletext}
+\end{document}
