@@ -16,8 +16,8 @@
 3. Compile normally. No shell escape, external images, or external generator
    is required.
 
-This repository is the distribution source for now; the package is not on CTAN.
-Keep the `.sty` file with each project so it retains the version you used.
+When installing directly from this repository, keep the style file with each
+project so it retains the version you used.
 
 ## Configure the stamp
 

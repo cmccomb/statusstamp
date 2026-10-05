@@ -40,6 +40,7 @@ to place it over text. Set `enabled=false` to turn page stamps off, or
 For an inline stamp, use `\statusstamp[text=DRAFT,scale=.5]`.
 
 [All options and usage notes](docs/usage.md) ·
+[PDF package manual](docs/statusstamp-manual.pdf) ·
 [Development and builds](docs/development.md)
 
 Copyright 2026 Chris McComb. [MIT License](LICENSE).

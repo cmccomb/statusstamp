@@ -1,7 +1,7 @@
 PYTHON ?= python3
 ENGINE ?= tectonic
 
-.PHONY: check gallery bundle
+.PHONY: check gallery bundle ctan
 
 check:
 	$(PYTHON) tests/check.py --engine "$(ENGINE)"
@@ -11,3 +11,7 @@ gallery:
 
 bundle:
 	$(PYTHON) scripts/bundle.py
+
+ctan:
+	tectonic --outdir docs docs/statusstamp-manual.tex
+	$(PYTHON) scripts/ctan.py

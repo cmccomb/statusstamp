@@ -1,0 +1,139 @@
+\documentclass[11pt]{article}
+\usepackage[margin=25mm]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true,linkcolor=black,urlcolor=blue}
+\setlength{\parskip}{0.45em}
+\setlength{\parindent}{0pt}
+
+\newcommand{\option}[1]{\texttt{#1}}
+
+\title{\texttt{statusstamp}\\[0.35em]\large Reproducible document status stamps for LaTeX}
+\author{Chris McComb}
+\date{Version 0.1.0 \quad 12 September 2026}
+
+\begin{document}
+\maketitle
+
+\section{Overview}
+
+\texttt{statusstamp} draws a document status stamp as vector graphics. By
+default, a distressed red \textbf{SUBMITTED} stamp appears behind the text at
+the center of every page. The label, date, color, scale, rotation, wear
+pattern, page selection, placement, and layer can be changed. A separate
+command draws a stamp inline.
+
+The source, examples, issue tracker, and illustrated gallery are available at
+\url{https://github.com/cmccomb/statusstamp}.
+
+\section{Installation and first use}
+
+Place \texttt{statusstamp.sty} where LaTeX can find it, or put a copy beside
+your main \texttt{.tex} file. In Overleaf, upload the style file to your
+project. Add this line to the document preamble:
+
+\begin{verbatim}
+\usepackage{statusstamp}
+\end{verbatim}
+
+No shell escape, external image, or external generator is needed. To change
+the automatic page stamp, use \verb|\statusstampsetup| in the preamble:
+
+\begin{verbatim}
+\statusstampsetup{
+  text=ACCEPTED,
+  date={12 September 2026},
+  color=teal!70!black,
+  scale=.48,
+  angle=-8,
+  position=top-right,
+  layer=foreground,
+  pages=first
+}
+\end{verbatim}
+
+Options can also be passed to \verb|\usepackage|. Use
+\verb|\statusstampsetup| for values containing commas.
+
+\section{Options}
+
+\begin{description}
+  \item[\option{text}] Nonempty label. Default: \texttt{SUBMITTED}.
+  \item[\option{date}] Optional second line; empty by default. The package
+    does not generate a date automatically.
+  \item[\option{enabled}] \texttt{true} or \texttt{false}; controls automatic
+    page stamps. Default: \texttt{true}.
+  \item[\option{pages}] \texttt{all}, \texttt{first}, \texttt{odd}, or
+    \texttt{even}; counts physical PDF pages. Default: \texttt{all}.
+  \item[\option{position}] \texttt{center}, \texttt{top-left},
+    \texttt{top-right}, \texttt{bottom-left}, or \texttt{bottom-right}.
+    Default: \texttt{center}.
+  \item[\option{layer}] \texttt{background} behind page content or
+    \texttt{foreground} above it. Default: \texttt{background}.
+  \item[\option{color}] Any \texttt{xcolor} color or expression. The default,
+    \texttt{statusstampred}, is RGB 205, 32, 32.
+  \item[\option{opacity}] Ink opacity from 0 to 1. Default: \texttt{.82}.
+  \item[\option{angle}] Counterclockwise rotation in degrees. Default:
+    \texttt{11}.
+  \item[\option{scale}] Positive scale factor for the entire stamp. Default:
+    \texttt{1}.
+  \item[\option{distressed}] \texttt{true} for rough borders and missing-ink
+    marks; \texttt{false} for clean double borders. Default: \texttt{true}.
+  \item[\option{seed}] Integer PGF random seed for a repeatable wear pattern.
+    Default: \texttt{7319}.
+  \item[\option{paper-color}] Color used to paint scratches and flecks.
+    Default: \texttt{white}.
+  \item[\option{margin}] Corner inset from the stamp's rotated bounding box
+    to the paper edge. Default: \texttt{1cm}.
+  \item[\option{xshift}, \option{yshift}] Extra horizontal or vertical shift.
+    Default: \texttt{0pt} for each.
+\end{description}
+
+At \verb|scale=1|, the unrotated outer border is 7.64\,cm by 2.30\,cm.
+Short labels and dates work best within the fixed lettering area.
+
+\clearpage
+\section{Inline stamps and page changes}
+
+Use \verb|\statusstamp| to draw a stamp in ordinary document flow. Its
+optional settings affect only that drawing:
+
+\begin{verbatim}
+\usepackage[enabled=false]{statusstamp}
+% Later, inside the document:
+\statusstamp[text=DRAFT,scale=.5,distressed=false]
+\end{verbatim}
+
+\verb|enabled=false| disables automatic page overlays, but inline stamps
+still render. Automatic stamps do not change margins or pagination.
+
+Stamps are placed when LaTeX ships a page out. If you change settings partway
+through a document, finish pending pages first:
+
+\begin{verbatim}
+\clearpage
+\statusstampsetup{enabled=false}
+\end{verbatim}
+
+The package does not interpret the document class's \texttt{draft} or
+\texttt{final} option; select the desired stamp explicitly.
+
+\section{Rendering and requirements}
+
+The package requires LaTeX dated 2020-10-01 or later, TikZ/PGF,
+\texttt{xcolor}, \texttt{graphicx}, and the TeX Gyre Heros
+(\texttt{qhv}) font family. It uses LaTeX shipout hooks and restores PGF's
+random-generator state after drawing, so a stamp does not change unrelated
+randomized diagrams.
+
+Missing ink is painted with \option{paper-color}; it is not transparent.
+For colored paper, set that color to match. Over photographs or other varied
+backgrounds, use \verb|distressed=false|. A foreground stamp can cover
+page content, while an opaque image can hide a background stamp.
+
+\section{License}
+
+Copyright 2026 Chris McComb. Released under the MIT License. See the
+\texttt{LICENSE} file distributed with the package.
+
+\end{document}

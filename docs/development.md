@@ -12,6 +12,7 @@ python3 -m venv .venv
 make check PYTHON=.venv/bin/python ENGINE=tectonic
 make gallery PYTHON=.venv/bin/python ENGINE=tectonic
 make bundle PYTHON=.venv/bin/python
+make ctan PYTHON=.venv/bin/python
 ```
 
 `ENGINE` can also be `pdflatex`, `xelatex`, or `lualatex`, or an absolute path
@@ -41,3 +42,5 @@ pdflatex -output-directory=build examples/minimal.tex
 a root `main.tex` example, the other examples, README, changelog, and license.
 It does not publish or upload anything.
 
+
+The CTAN build compiles the PDF manual and creates a flat package archive under `build/`. Its file list is maintained in [`scripts/ctan.py`](../scripts/ctan.py).
