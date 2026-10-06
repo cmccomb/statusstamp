@@ -14,4 +14,6 @@ bundle:
 
 ctan:
 	tectonic --outdir docs docs/statusstamp-manual.tex
+	tectonic -Z search-path=. --outdir examples examples/statusstamp-example-minimal.tex
+	tectonic -Z search-path=. --outdir examples examples/statusstamp-example-configured.tex
 	$(PYTHON) scripts/ctan.py

@@ -15,8 +15,10 @@ files = {
     "statusstamp.sty": "statusstamp.sty",
     "docs/statusstamp-manual.tex": "statusstamp-manual.tex",
     "docs/statusstamp-manual.pdf": "statusstamp-manual.pdf",
-    "examples/minimal.tex": "minimal.tex",
-    "examples/configured.tex": "configured.tex",
+    "examples/statusstamp-example-minimal.tex": "statusstamp-example-minimal.tex",
+    "examples/statusstamp-example-minimal.pdf": "statusstamp-example-minimal.pdf",
+    "examples/statusstamp-example-configured.tex": "statusstamp-example-configured.tex",
+    "examples/statusstamp-example-configured.pdf": "statusstamp-example-configured.pdf",
     "CHANGELOG.md": "CHANGELOG.md",
     "LICENSE": "LICENSE",
 }

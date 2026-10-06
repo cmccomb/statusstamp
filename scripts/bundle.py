@@ -8,8 +8,8 @@ output = root / "build" / "statusstamp-overleaf.zip"
 output.parent.mkdir(exist_ok=True)
 files = {
     "statusstamp.sty": "statusstamp.sty",
-    "examples/minimal.tex": "main.tex",
-    "examples/configured.tex": "examples/configured.tex",
+    "examples/statusstamp-example-minimal.tex": "main.tex",
+    "examples/statusstamp-example-configured.tex": "examples/statusstamp-example-configured.tex",
     "examples/gallery.tex": "examples/gallery.tex",
     "examples/gallery-samples.tex": "examples/gallery-samples.tex",
     "docs/gallery-samples.pdf": "docs/gallery-samples.pdf",

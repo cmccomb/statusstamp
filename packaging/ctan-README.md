@@ -7,7 +7,7 @@ placement, rotation, scale, opacity, and the repeatable wear pattern are
 configurable.
 
 This archive contains the handwritten statusstamp.sty, a PDF manual with its
-LaTeX source, two examples, a changelog, and the license. Read
+LaTeX source, two examples with their compiled PDFs, a changelog, and the license. Read
 statusstamp-manual.pdf for installation instructions and the option reference.
 An illustrated gallery is available in the source repository.
 

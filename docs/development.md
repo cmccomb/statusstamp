@@ -33,9 +33,9 @@ To compile only an example from the repository root:
 
 ```sh
 mkdir -p build
-tectonic -Z search-path=. --outdir build examples/minimal.tex
+tectonic -Z search-path=. --outdir build examples/statusstamp-example-minimal.tex
 # Or with TeX Live:
-pdflatex -output-directory=build examples/minimal.tex
+pdflatex -output-directory=build examples/statusstamp-example-minimal.tex
 ```
 
 `make bundle` creates `build/statusstamp-overleaf.zip` containing the package,
@@ -43,4 +43,6 @@ a root `main.tex` example, the other examples, README, changelog, and license.
 It does not publish or upload anything.
 
 
-The CTAN build compiles the PDF manual and creates a flat package archive under `build/`. Its file list is maintained in [`scripts/ctan.py`](../scripts/ctan.py).
+The CTAN build compiles the PDF manual and both example PDFs, then creates a
+flat package archive under `build/`. Its file list is maintained in
+[`scripts/ctan.py`](../scripts/ctan.py).
